@@ -49,11 +49,15 @@ do
 done
 
 echo "UPDATE wp_blogs SET domain='$NEW_DOMAIN' WHERE domain='$CURRENT_DOMAIN';" >> $OUTPUT_FILE
+echo "UPDATE wp_site SET domain='$NEW_DOMAIN' WHERE domain='$CURRENT_DOMAIN';" >> $OUTPUT_FILE
+echo "UPDATE wp_sitemeta SET meta_value = replace(meta_value, '$CURRENT_DOMAIN', '$NEW_DOMAIN') WHERE meta_key='siteurl';" >> $OUTPUT_FILE
+echo "UPDATE wp_usermeta SET meta_value='$NEW_DOMAIN' WHERE meta_key='source_domain';" >> $OUTPUT_FILE
 
 echo "Done."
 echo ""
 echo "IMPORTANT NEXT STEPS:"
 echo "1. Backup your database (i.e., mysqldump --opt $DB_NAME -u root -p > /tmp/$DB_NAME-backup.sql)"
-echo "2. Import the generates SQL updates (i.e., mysql -u root -p $DB_NAME < $OUTPUT_FILE)"
+echo "2. Import the generated SQL updates (i.e., mysql -u root -p $DB_NAME < $OUTPUT_FILE)"
 echo "3. Modify wp-config.php to reflect the new domain (i.e., define('DOMAIN_CURRENT_SITE', '$NEW_DOMAIN');)"
-
+echo "4. Ensure your web server(s) is/are configured to handle $NEW_DOMAIN"
+echo ""
